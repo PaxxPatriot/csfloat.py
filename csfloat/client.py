@@ -30,7 +30,6 @@ from .http import HTTPClient
 from .iterators import ListingAsyncIterator
 from .listing import Listing
 
-
 __all__ = ("Client",)
 
 

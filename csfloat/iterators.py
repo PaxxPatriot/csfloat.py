@@ -25,8 +25,8 @@ SOFTWARE.
 import asyncio
 from typing import Any, Callable, Coroutine, Dict, List, Optional, Union
 
-from .listing import Listing
 from .errors import BadRequest
+from .listing import Listing
 
 
 class ListingAsyncIterator:
@@ -34,7 +34,7 @@ class ListingAsyncIterator:
         self,
         getter: Callable[..., Coroutine[Any, Any, Any]],
         limit: Optional[int] = None,
-        pagination_token: int = 59,
+        pagination_token: int = 0,
         **kwargs: Dict[str, Any],
     ) -> None:
         self.limit = limit

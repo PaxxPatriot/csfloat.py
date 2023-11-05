@@ -27,6 +27,7 @@ __all__ = (
     "CSFloatException",
     "ClientException",
     "HTTPException",
+    "BadRequest",
     "Unauthorized",
     "Forbidden",
     "NotFound",

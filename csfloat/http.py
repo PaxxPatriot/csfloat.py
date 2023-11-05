@@ -30,7 +30,7 @@ import aiohttp
 
 from csfloat import __version__
 
-from .errors import BadRequest, Unauthorized, HTTPException, InternalServerError, Forbidden, NotFound
+from .errors import BadRequest, Forbidden, HTTPException, InternalServerError, NotFound, Unauthorized
 
 _log = logging.getLogger(__name__)
 
@@ -86,7 +86,7 @@ class HTTPClient:
             kwargs["params"] = params
 
         async with self.__session.request(method, url, **kwargs) as response:
-            _log.debug(f"{method} {url} with {kwargs} has returned {response.status}")
+            _log.info(f"{method} {url} with {kwargs} has returned {response.status}")
 
             data = await response.json()
 

@@ -23,7 +23,6 @@ SOFTWARE.
 """
 
 import datetime
-from collections import namedtuple
 from typing import Any, Dict, NamedTuple, Optional
 
 from .enums import ListingType
@@ -278,8 +277,8 @@ class Item:
         return self._type
 
     @property
-    def scm(self) -> SteamCommunityMarket:
-        return SteamCommunityMarket(self._scm["price"], self._scm["volume"])
+    def scm(self) -> Optional[SteamCommunityMarket]:
+        return SteamCommunityMarket(**self._scm) if self._scm else None
 
     @property
     def rarity_name(self) -> str:
