@@ -31,7 +31,9 @@ __all__ = (
     "Unauthorized",
     "Forbidden",
     "NotFound",
+    "Gone",
     "InternalServerError",
+    "ServiceUnavailable",
 )
 
 
@@ -90,7 +92,7 @@ class HTTPException(CSFloatException):
 
 
 class BadRequest(HTTPException):
-    """Exception that’s raised for when status code 400 occurs.
+    """Exception that's raised for when status code 400 occurs.
 
     Subclass of :exc:`HTTPException`"""
 
@@ -98,7 +100,7 @@ class BadRequest(HTTPException):
 
 
 class Unauthorized(HTTPException):
-    """Exception that’s raised for when status code 401 occurs.
+    """Exception that's raised for when status code 401 occurs.
 
     Subclass of :exc:`HTTPException`"""
 
@@ -106,7 +108,7 @@ class Unauthorized(HTTPException):
 
 
 class Forbidden(HTTPException):
-    """Exception that’s raised for when status code 403 occurs.
+    """Exception that's raised for when status code 403 occurs.
 
     Subclass of :exc:`HTTPException`"""
 
@@ -114,7 +116,15 @@ class Forbidden(HTTPException):
 
 
 class NotFound(HTTPException):
-    """Exception that’s raised for when status code 404 occurs.
+    """Exception that's raised for when status code 404 occurs.
+
+    Subclass of :exc:`HTTPException`"""
+
+    pass
+
+
+class Gone(HTTPException):
+    """Exception that's raised for when status code 410 occurs.
 
     Subclass of :exc:`HTTPException`"""
 
@@ -122,7 +132,15 @@ class NotFound(HTTPException):
 
 
 class InternalServerError(HTTPException):
-    """Exception that’s raised for when a 500 range status code occurs.
+    """Exception that's raised for when a 500 range status code occurs.
+
+    Subclass of :exc:`HTTPException`"""
+
+    pass
+
+
+class ServiceUnavailable(HTTPException):
+    """Exception that's raised for when a status code 503  occurs.
 
     Subclass of :exc:`HTTPException`"""
 
