@@ -1,3 +1,53 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "csfloat.py"
+authors = [
+    {name = "PaxxPatriot"},
+]
+description = "A Python wrapper for the csfloat API"
+readme = "README.md"
+keywords = ["csfloat", "Counter-Strike 2"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Internet",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+dependencies = [
+    "aiohttp",
+]
+dynamic = ["version"]
+
+[project.urls]
+Repository = "https://github.com/PaxxPatriot/csfloat.py.git"
+Issues = "https://github.com/PaxxPatriot/csfloat.py/issues"
+
+[tool.setuptools]
+packages = ["csfloat"]
+
+[tool.setuptools.dynamic]
+version = {attr = "csfloat.__version__"}
+
+[tool.black]
+line-length = 125
+skip-string-normalization = true
+
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+combine_star = true
+line_length = 125
