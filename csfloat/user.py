@@ -25,11 +25,13 @@ SOFTWARE.
 __all__ = (
     "PaymentAccounts",
     "UserStatistics",
+    "AuthenticatedUserStatistics",
     "UserPreferences",
     "User",
+    "AuthenticatedUser",
 )
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 
 class PaymentAccounts:
@@ -55,23 +57,56 @@ class PaymentAccounts:
 
 class UserStatistics:
     __slots__ = (
-        "_total_sales",
-        "_total_purchases",
         "_median_trade_time",
         "_total_avoided_trades",
         "_total_failed_trades",
-        "_total_verified_trades",
         "_total_trades",
+        "_total_verified_trades",
     )
 
-    def __init__(self, data: Dict[str, Any]) -> None:
-        self._total_sales = data.get("total_sales", 0)
-        self._total_purchases = data.get("total_purchases", 0)
+    def __init__(self, *, data: Dict[str, Any]) -> None:
         self._median_trade_time = data.get("median_trade_time", 0)
         self._total_avoided_trades = data.get("total_avoided_trades", 0)
         self._total_failed_trades = data.get("total_failed_trades", 0)
-        self._total_verified_trades = data.get("total_verified_trades", 0)
         self._total_trades = data.get("total_trades", 0)
+        self._total_verified_trades = data.get("total_verified_trades", 0)
+
+    @property
+    def median_trade_time(self) -> int:
+        """:class:`int`: Returns the median trade time of the seller in seconds."""
+        return self._median_trade_time
+
+    @property
+    def total_avoided_trades(self) -> int:
+        """:class:`int`: Returns the number of avoided trades of the seller."""
+        return self._total_avoided_trades
+
+    @property
+    def total_failed_trades(self) -> int:
+        """:class:`int`: Returns the number of failed trades of the seller."""
+        return self._total_failed_trades
+
+    @property
+    def total_trades(self) -> int:
+        """:class:`int`: Returns the number of trades of the seller."""
+        return self._total_trades
+
+    @property
+    def total_verified_trades(self) -> int:
+        """:class:`int`: Returns the number of verified trades of the seller."""
+        return self._total_verified_trades
+
+
+class AuthenticatedUserStatistics(UserStatistics):
+    __slots__ = (
+        "_total_sales",
+        "_total_purchases",
+    )
+
+    def __init__(self, data: Dict[str, Any]) -> None:
+        super().__init__(data=data)
+        self._total_sales = data.get("total_sales", 0)
+        self._total_purchases = data.get("total_purchases", 0)
 
     @property
     def total_sales(self) -> float:
@@ -80,27 +115,6 @@ class UserStatistics:
     @property
     def total_purchases(self) -> float:
         return self._total_purchases / 100
-
-    @property
-    def median_trade_time(self) -> int:
-        """:class:`int`: Returns the median trade time in seconds."""
-        return self._median_trade_time
-
-    @property
-    def total_avoided_trades(self) -> int:
-        return self._total_avoided_trades
-
-    @property
-    def total_failed_trades(self) -> int:
-        return self._total_failed_trades
-
-    @property
-    def total_verified_trades(self) -> int:
-        return self._total_verified_trades
-
-    @property
-    def total_trades(self) -> int:
-        return self._total_trades
 
 
 class UserPreferences:
@@ -126,26 +140,94 @@ class UserPreferences:
 
 class User:
     __slots__ = (
+        "_avatar",
+        "_away",
+        "_flags",
+        "_has_valid_steam_api_key",
+        "_online",
+        "_stall_public",
+        "_statistics",
         "_steam_id",
         "_username",
-        "_flags",
-        "_avatar",
+        "_verification_mode",
+    )
+
+    def __init__(self, *, data: Dict[str, Any]) -> None:
+        self._avatar = data.get("avatar")
+        self._away = data.get("away", False)
+        self._flags = data.get("flags")
+        self._has_valid_steam_api_key = data.get("has_valid_steam_api_key", False)
+        self._online = data.get("online", False)
+        self._stall_public = data.get("stall_public", False)
+        self._statistics = data.get("statistics")
+        self._steam_id = data.get("steam_id")
+        self._username = data.get("username")
+        self._verification_mode = data.get("verification_mode")
+
+    @property
+    def avatar(self) -> str:
+        """:class:`str`: Returns the URL to the avatar of the seller."""
+        return self._avatar
+
+    @property
+    def away(self) -> bool:
+        """:class:`bool`: Returns the away status of the seller."""
+        return self._away
+
+    @property
+    def flags(self) -> int:
+        """:class:`int`: Returns the flags of the seller."""
+        return self._flags
+
+    @property
+    def has_valid_steam_api_key(self) -> bool:
+        """:class:`bool`: Returns the validity of the Steam API key of the seller."""
+        return self._has_valid_steam_api_key
+
+    @property
+    def online(self) -> bool:
+        """:class:`bool`: Returns the online status of the seller."""
+        return self._online
+
+    @property
+    def stall_public(self) -> bool:
+        """:class:`bool`: Returns the public stall status of the seller."""
+        return self._stall_public
+
+    @property
+    def statistics(self) -> UserStatistics:
+        """:class:`Any`: Returns the statistics of the seller."""
+        return UserStatistics(data=self._statistics)
+
+    @property
+    def steam_id(self) -> Optional[str]:
+        """:class:`str`: Returns the Steam ID of the seller."""
+        return self._steam_id
+
+    @property
+    def username(self) -> Optional[str]:
+        """:class:`str`: Returns the username of the seller."""
+        return self._username
+
+    @property
+    def verification_mode(self) -> str:
+        """:class:`str`: Returns the verification mode of the seller."""
+        return self._verification_mode
+
+
+class AuthenticatedUser(User):
+    __slots__ = (
         "_background_url",
         "_email",
         "_balance",
         "_pending_balance",
-        "_stall_public",
-        "_away",
         "_trade_token",
         "_payment_accounts",
         "_api_key",
         "_statistics",
         "_preferences",
         "_know_your_customer",
-        "_verification_mode",
-        "_has_valid_steam_api_key",
         "_obfuscated_id",
-        "_online",
         "_fee",
         "_withdraw_fee",
         "_subscriptions",
@@ -153,50 +235,22 @@ class User:
     )
 
     def __init__(self, *, data: Dict[str, Any]) -> None:
-        self._steam_id = data.get("steam_id", "")
-        self._username = data.get("username", "")
-        self._flags = data.get("flags", 0)
-        self._avatar = data.get("avatar", "")
+        super().__init__(data=data)
         self._background_url = data.get("background_url", "")
         self._email = data.get("email", "")
         self._balance = data.get("balance", 0)
         self._pending_balance = data.get("pending_balance", 0)
-        self._stall_public = data.get("stall_public", False)
-        self._away = data.get("away", False)
         self._trade_token = data.get("trade_token", "")
         self._payment_accounts = data.get("payment_accounts", None)
         self._api_key = data.get("api_key", "")
-        self._statistics = data.get("statistics", None)
+        self._statistics = data.get("statistics")
         self._preferences = data.get("preferences", None)
         self._know_your_customer = data.get("know_your_customer", "")
-        self._verification_mode = data.get("verification_mode", "")
-        self._has_valid_steam_api_key = data.get("has_valid_steam_api_key", False)
         self._obfuscated_id = data.get("obfuscated_id", "")
-        self._online = data.get("online", False)
         self._fee = data.get("fee", 0.0)
         self._withdraw_fee = data.get("withdraw_fee", 0.0)
         self._subscriptions = data.get("subscriptions", [])
         self._has_2fa = data.get("has_2fa", False)
-
-    @property
-    def steam_id(self) -> str:
-        """:class:`Any`: Returns the Steam ID of the user."""
-        return self._steam_id
-
-    @property
-    def username(self) -> str:
-        """:class:`Any`: Returns the username of the user."""
-        return self._username
-
-    @property
-    def flags(self) -> int:
-        """:class:`Any`: Returns the flags of the user."""
-        return self._flags
-
-    @property
-    def avatar(self) -> str:
-        """:class:`Any`: Returns the avatar of the user."""
-        return self._avatar
 
     @property
     def background_url(self) -> str:
@@ -219,16 +273,6 @@ class User:
         return self._pending_balance / 100
 
     @property
-    def stall_public(self) -> bool:
-        """:class:`Any`: Returns the public stall status of the user."""
-        return self._stall_public
-
-    @property
-    def away(self) -> bool:
-        """:class:`Any`: Returns the away status of the user."""
-        return self._away
-
-    @property
     def trade_token(self) -> str:
         """:class:`Any`: Returns the trade token of the user."""
         return self._trade_token
@@ -244,13 +288,13 @@ class User:
         return self._api_key
 
     @property
-    def statistics(self) -> UserStatistics:
-        """:class:`Any`: Returns the statistics of the user."""
-        return UserStatistics(data=self._statistics)
+    def statistics(self) -> AuthenticatedUserStatistics:
+        """:class:`AuthenticatedUserStatistics`: Returns the statistics of the user."""
+        return AuthenticatedUserStatistics(data=self._statistics)
 
     @property
     def preferences(self) -> UserPreferences:
-        """:class:`Any`: Returns the preferences of the user."""
+        """:class:`UserPreferences`: Returns the preferences of the user."""
         return UserPreferences(data=self._preferences)
 
     @property
@@ -259,24 +303,9 @@ class User:
         return self._know_your_customer
 
     @property
-    def verification_mode(self) -> str:
-        """:class:`Any`: Returns the verification mode of the user."""
-        return self._verification_mode
-
-    @property
-    def has_valid_steam_api_key(self) -> bool:
-        """:class:`Any`: Returns the validity of the Steam API key of the user."""
-        return self._has_valid_steam_api_key
-
-    @property
     def obfuscated_id(self) -> str:
         """:class:`Any`: Returns the obfuscated ID of the user."""
         return self._obfuscated_id
-
-    @property
-    def online(self) -> bool:
-        """:class:`Any`: Returns the online status of the user."""
-        return self._online
 
     @property
     def fee(self) -> float:

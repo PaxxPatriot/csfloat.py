@@ -21,6 +21,7 @@ from .enums import *
 from .errors import *
 from .iterators import *
 from .listing import *
+from .user import *
 
 
 class VersionInfo(NamedTuple):
