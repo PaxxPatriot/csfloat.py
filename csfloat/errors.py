@@ -34,6 +34,7 @@ __all__ = (
     "Gone",
     "InternalServerError",
     "ServiceUnavailable",
+    "BadArgument",
 )
 
 
@@ -145,3 +146,12 @@ class ServiceUnavailable(HTTPException):
     Subclass of :exc:`HTTPException`"""
 
     pass
+
+
+class BadArgument(CSFloatException):
+    """Exception that's raised when a user enters a bad argument to a client method.
+
+    Subclass of :exc:`CSFloatException`"""
+
+    def __init__(self, message):
+        super().__init__(message)
