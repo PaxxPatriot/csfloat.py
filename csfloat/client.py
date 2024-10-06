@@ -58,7 +58,7 @@ class Client:
 
         Returns
         -------
-        :class:`TransactionAsyncIterator` of :class:`Item`
+        :class:`ListingAsyncIterator` of :class:`Item`
         """
 
         return ListingAsyncIterator(self.http.get_all_listings)
