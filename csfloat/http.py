@@ -22,8 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import asyncio
 import logging
 import sys
+import time
 from typing import Any, Dict, Iterable, List, Optional
 
 import aiohttp
@@ -89,26 +91,35 @@ class HTTPClient:
             kwargs["params"] = params
 
         async with self.__session.request(method, url, **kwargs) as response:
-            _log.info(f"{method} {url} with {kwargs} has returned {response.status}")
+            for _ in range(2):
+                _log.info(f"{method} {url} with {kwargs} has returned {response.status}")
 
-            data = await response.json()
+                data = await response.json()
 
-            if 300 > response.status >= 200:
-                _log.debug(f"{method} {url} has received {data}")
-                return data
+                if 300 > response.status >= 200:
+                    _log.debug(f"{method} {url} has received {data}")
+                    return data
 
-            if response.status in {500, 503}:
-                raise InternalServerError(response, data)
+                if response.status in {500, 503}:
+                    raise InternalServerError(response, data)
 
-            if response.status == 400:
-                raise BadRequest(response, data)
-            if response.status == 401:
-                raise Unauthorized(response, data)
-            if response.status == 403:
-                raise Forbidden(response, data)
-            if response.status == 404:
-                raise NotFound(response, data)
-            raise HTTPException(response, data)
+                if response.status == 400:
+                    raise BadRequest(response, data)
+                if response.status == 401:
+                    raise Unauthorized(response, data)
+                if response.status == 403:
+                    raise Forbidden(response, data)
+                if response.status == 404:
+                    raise NotFound(response, data)
+                if response.status == 429:
+                    # We are getting rate-limited, read x-ratelimit-reset header and calculate cooldown
+                    default_ratelimit_time = int(time.time()) + 600
+                    ratelimit_reset = int(headers.get("X-Ratelimit-Reset", default_ratelimit_time))
+                    wait_time = ratelimit_reset - int(time.time())
+                    _log.info(f"{method} {url} is getting rate-limited, retry after {wait_time} seconds")
+                    await asyncio.sleep(wait_time)
+                    continue
+                raise HTTPException(response, data)
 
     async def get_all_listings(self, **parameters: Any) -> List[Dict[str, Any]]:
         return await self.request(Route("GET", "/listings"), **parameters)
