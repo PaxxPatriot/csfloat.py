@@ -28,6 +28,7 @@ __all__ = (
     "SortingParameter",
     "Category",
     "ListingType",
+    "Rarity",
 )
 
 
@@ -57,3 +58,14 @@ class Category(IntEnum):
 class ListingType(Enum):
     buy_now = "buy_now"
     auction = "auction"
+
+
+class Rarity(IntEnum):
+    any = 0
+    consumer = 1
+    industrial = 2
+    mil_spec = 3
+    restricted = 4
+    classified = 5
+    covert = 6
+    contraband = 7

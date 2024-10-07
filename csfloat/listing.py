@@ -50,7 +50,7 @@ class TopBid:
 
     def __init__(self, *, data: Dict[str, Any]) -> None:
         self._bid_id = data.get("id", "")
-        self._created_at = data.get("created_at")
+        self._created_at = data.get("created_at", "1970-01-01T00:00:00.000000Z")
         self._price = data.get("price", "")
         self._contract_id = data.get("contract_id", 0)
         self._state = data.get("state", "")
@@ -96,7 +96,7 @@ class AuctionDetails:
     def __init__(self, *, data: Dict[str, Any]) -> None:
         self._reserve_price = data.get("reserve_price", 0.0)
         self._top_bid = data.get("top_bid")
-        self._expires_at = data.get("expires_at")
+        self._expires_at = data.get("expires_at", "1970-01-01T00:00:00.000000Z")
         self._min_next_bid = data.get("min_next_bid", 0.0)
 
     @property
@@ -136,7 +136,7 @@ class Listing:
 
     def __init__(self, *, data: Dict[str, Any]) -> None:
         self._listing_id = data.get("id", "")
-        self._created_at = data.get("created_at")
+        self._created_at = data.get("created_at", "1970-01-01T00:00:00.000000Z")
         self._type = data.get("type", "")
         self._price = data.get("price", 0)
         self._state = data.get("state", "")

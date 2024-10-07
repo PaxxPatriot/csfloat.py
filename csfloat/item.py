@@ -23,17 +23,46 @@ SOFTWARE.
 """
 
 import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
+from .enums import Rarity
 
 __all__ = (
+    "StickerReference",
     "Reference",
+    "Sticker",
     "Item",
 )
+
+
+class StickerReference:
+    __slots__ = (
+        "_price",
+        "_quantity",
+        "_updated_at",
+    )
+
+    def __init__(self, *, data: Dict[str, Any]) -> None:
+        self._price = data.get("price", 0)
+        self._quantity = data.get("quantity", 0)
+        self._updated_at = data.get("updated_at", "1970-01-01T00:00:00.000000Z")
+
+    @property
+    def price(self) -> float:
+        return self._price / 100
+
+    @property
+    def quantity(self) -> int:
+        return self._quantity
+
+    @property
+    def updated_at(self) -> datetime.datetime:
+        return datetime.datetime.fromisoformat(self._updated_at)
 
 
 class Reference:
     __slots__ = (
         "_base_price",
+        "_float_factor",
         "_predicted_price",
         "_quantity",
         "_last_updated",
@@ -41,9 +70,10 @@ class Reference:
 
     def __init__(self, *, data: Dict[str, Any]) -> None:
         self._base_price = data.get("base_price", 0)
+        self._float_factor = data.get("float_factor", 1.0)
         self._predicted_price = data.get("predicted_price", 0)
         self._quantity = data.get("quantity", 0)
-        self._last_updated = data.get("last_updated")
+        self._last_updated = data.get("last_updated", "1970-01-01T00:00:00.000000Z")
 
     @property
     def base_price(self) -> float:
@@ -66,6 +96,49 @@ class Reference:
         return datetime.datetime.fromisoformat(self._last_updated)
 
 
+class Sticker:
+    __slots__ = (
+        "_sticker_id",
+        "_slot",
+        "_wear",
+        "_icon_url",
+        "_name",
+        "_reference",
+    )
+
+    def __init__(self, *, data: Dict[str, Any]) -> None:
+        self._sticker_id = data.get("stickerId", 0)
+        self._slot = data.get("slot", 0)
+        self._wear = data.get("wear", 1.0)
+        self._icon_url = data.get("icon_url", "")
+        self._name = data.get("name", "")
+        self._reference = data.get("reference")
+
+    @property
+    def sticker_id(self) -> int:
+        return self._sticker_id
+
+    @property
+    def slot(self) -> int:
+        return self._slot
+
+    @property
+    def wear(self) -> float:
+        return self._wear
+
+    @property
+    def icon_url(self) -> str:
+        return self._icon_url
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def reference(self) -> Optional[StickerReference]:
+        return StickerReference(data=self._reference) if self._reference else None
+
+
 class Item:
     __slots__ = (
         "_asset_id",
@@ -81,9 +154,12 @@ class Item:
         "_quality",
         "_market_hash_name",
         "_stickers",
+        "_low_rank",
         "_tradable",
         "_inspect_link",
         "_has_screenshot",
+        "_cs2_screenshot_id",
+        "_cs2_screenshot_at",
         "_is_commodity",
         "_type",
         "_rarity_name",
@@ -92,7 +168,8 @@ class Item:
         "_wear_name",
         "_description",
         "_collection",
-        "_reference",
+        "_serialized_inspect",
+        "_gs_sig",
     )
 
     def __init__(self, *, data: Dict[str, Any]) -> None:
@@ -100,7 +177,7 @@ class Item:
         self._def_index = data.get("def_index", 0)
         self._paint_index = data.get("paint_index", 0)
         self._paint_seed = data.get("paint_seed", 0)
-        self._float_value = data.get("float_value")
+        self._float_value = data.get("float_value", 0.0)
         self._icon_url = data.get("icon_url", "")
         self._d_param = data.get("d_param", "")
         self._is_stattrak = data.get("is_stattrak", False)
@@ -109,10 +186,13 @@ class Item:
         self._quality = data.get("quality", 0)
         self._market_hash_name = data.get("market_hash_name")
         self._stickers = data.get("stickers", [])
+        self._low_rank = data.get("low_rank", 1_000_000)
         self._tradable = data.get("tradable", False)
         self._inspect_link = data.get("inspect_link")
         self._has_screenshot = data.get("has_screenshot", False)
-        self._is_commodity = data.get("is_commodity")
+        self._cs2_screenshot_id = data.get("cs2_screenshot_id", "")
+        self._cs2_screenshot_at = data.get("cs2_screenshot_at", "1970-01-01T00:00:00.000000Z")
+        self._is_commodity = data.get("is_commodity", False)
         self._type = data.get("type", "")
         self._rarity_name = data.get("rarity_name", "")
         self._type_name = data.get("type_name", "")
@@ -120,26 +200,27 @@ class Item:
         self._wear_name = data.get("wear_name", "")
         self._description = data.get("description", "")
         self._collection = data.get("collection", "")
-        self._reference = data.get("reference")
+        self._serialized_inspect = data.get("serialized_inspect", "")
+        self._gs_sig = data.get("gs_sig", "")
 
     @property
-    def asset_id(self) -> Any:
-        """:class:`Any`: Returns the asset ID of the item."""
+    def asset_id(self) -> str:
+        """:class:`str`: Returns the asset ID of the item."""
         return self._asset_id
 
     @property
-    def def_index(self) -> Any:
-        """:class:`Any`: Returns the def index of the item."""
+    def def_index(self) -> int:
+        """:class:`int`: Returns the def index of the item."""
         return self._def_index
 
     @property
-    def paint_index(self) -> Any:
-        """:class:`Any`: Returns the paint index of the item."""
+    def paint_index(self) -> int:
+        """:class:`int`: Returns the paint index of the item."""
         return self._paint_index
 
     @property
-    def paint_seed(self) -> Any:
-        """:class:`Any`: Returns the paint seed of the item."""
+    def paint_seed(self) -> int:
+        """:class:`int`: Returns the paint seed of the item."""
         return self._paint_seed
 
     @property
@@ -148,101 +229,119 @@ class Item:
         return self._float_value
 
     @property
-    def icon_url(self) -> Any:
-        """:class:`Any`: Returns the icon URL of the item."""
+    def icon_url(self) -> str:
+        """:class:`str`: Returns the icon URL of the item."""
         return self._icon_url
 
     @property
-    def d_param(self) -> Any:
-        """:class:`Any`: Returns the d param of the item."""
+    def d_param(self) -> str:
+        """:class:`str`: Returns the d param of the item."""
         return self._d_param
 
     @property
-    def is_stattrak(self) -> Any:
-        """:class:`Any`: Returns the stattrak status of the item."""
+    def is_stattrak(self) -> bool:
+        """:class:`bool`: Returns the stattrak status of the item."""
         return self._is_stattrak
 
     @property
-    def is_souvenir(self) -> Any:
-        """:class:`Any`: Returns the souvenir status of the item."""
+    def is_souvenir(self) -> bool:
+        """:class:`bool`: Returns the souvenir status of the item."""
         return self._is_souvenir
 
     @property
-    def rarity(self) -> Any:
-        """:class:`Any`: Returns the rarity of the item."""
-        return self._rarity
+    def rarity(self) -> Rarity:
+        """:class:`Rarity`: Returns the rarity of the item."""
+        return Rarity(self._rarity)
 
     @property
-    def quality(self) -> Any:
-        """:class:`Any`: Returns the quality of the item."""
+    def quality(self) -> int:
+        """:class:`int`: Returns the quality of the item."""
         return self._quality
 
     @property
-    def market_hash_name(self) -> Any:
-        """:class:`Any`: Returns the market hash name of the item."""
+    def market_hash_name(self) -> str:
+        """:class:`str`: Returns the market hash name of the item."""
         return self._market_hash_name
 
     @property
-    def stickers(self) -> Any:
-        """:class:`Any`: Returns the stickers of the item."""
-        return self._stickers
+    def stickers(self) -> List[Sticker]:
+        """:class:`List` of :class:`Sticker`: Returns the stickers of the item."""
+        return [Sticker(data=sticker) for sticker in self._stickers]
 
     @property
-    def tradable(self) -> Any:
-        """:class:`Any`: Returns the tradable status of the item."""
+    def low_rank(self) -> int:
+        """:class:`int`: Returns the rank in FloatDB of the item."""
+        return self._low_rank
+
+    @property
+    def tradable(self) -> int:
+        """:class:`int`: Returns the tradable status of the item."""
         return self._tradable
 
     @property
-    def inspect_link(self) -> Any:
-        """:class:`Any`: Returns the inspect link of the item."""
+    def inspect_link(self) -> str:
+        """:class:`str`: Returns the inspect link of the item."""
         return self._inspect_link
 
     @property
-    def has_screenshot(self) -> Any:
-        """:class:`Any`: Returns the screenshot status of the item."""
+    def has_screenshot(self) -> bool:
+        """:class:`bool`: Returns the screenshot status of the item."""
         return self._has_screenshot
 
     @property
-    def is_commodity(self) -> Any:
-        """:class:`Any`: Returns the commodity status of the item."""
+    def cs2_screenshot_id(self) -> str:
+        """:class:`str`: Returns the CS2 screenshot ID."""
+        return self._cs2_screenshot_id
+
+    @property
+    def cs2_screenshot_at(self) -> datetime.datetime:
+        """:class:`datetime.datetime`: Returns timestamp of when the CS2 screenshot was taken."""
+        return datetime.datetime.fromisoformat(self._cs2_screenshot_at)
+
+    @property
+    def is_commodity(self) -> bool:
+        """:class:`bool`: Returns the commodity status of the item."""
         return self._is_commodity
 
     @property
-    def type(self) -> Any:
-        """:class:`Any`: Returns the type of the item."""
+    def type(self) -> str:
+        """:class:`str`: Returns the type of the item."""
         return self._type
 
     @property
-    def rarity_name(self) -> Any:
-        """:class:`Any`: Returns the rarity name of the item."""
+    def rarity_name(self) -> str:
+        """:class:`str`: Returns the rarity name of the item."""
         return self._rarity_name
 
     @property
-    def type_name(self) -> Any:
-        """:class:`Any`: Returns the type name of the item."""
+    def type_name(self) -> str:
+        """:class:`str`: Returns the type name of the item."""
         return self._type_name
 
     @property
-    def item_name(self) -> Any:
-        """:class:`Any`: Returns the item name of the item."""
+    def item_name(self) -> str:
+        """:class:`str`: Returns the item name of the item."""
         return self._item_name
 
     @property
-    def wear_name(self) -> Any:
-        """:class:`Any`: Returns the wear name of the item."""
+    def wear_name(self) -> str:
+        """:class:`str`: Returns the wear name of the item."""
         return self._wear_name
 
     @property
-    def description(self) -> Any:
-        """:class:`Any`: Returns the description of the item."""
+    def description(self) -> str:
+        """:class:`str`: Returns the description of the item."""
         return self._description
 
     @property
-    def collection(self) -> Any:
-        """:class:`Any`: Returns the collection of the item."""
+    def collection(self) -> str:
+        """:class:`str`: Returns the collection of the item."""
         return self._collection
 
     @property
-    def reference(self) -> Any:
-        """:class:`Any`: Returns the reference of the item."""
-        return self._reference
+    def serialized_inspect(self) -> str:
+        return self._serialized_inspect
+
+    @property
+    def gs_sig(self) -> str:
+        return self.gs_sig
