@@ -29,7 +29,11 @@ from .enums import ListingType
 from .item import Item, Reference
 from .user import User
 
-__all__ = ("AuctionDetails", "Listing",)
+__all__ = (
+    "TopBid",
+    "AuctionDetails",
+    "Listing",
+)
 
 
 class TopBid:
@@ -49,33 +53,33 @@ class TopBid:
         self._created_at = data.get("created_at")
         self._price = data.get("price", "")
         self._contract_id = data.get("contract_id", 0)
-        self._state = data.get("state", 0)
+        self._state = data.get("state", "")
         self._obfuscated_buyer_id = data.get("obfuscated_buyer_id", 0)
 
     @property
-    def bid_id(self):
+    def bid_id(self) -> str:
         return self._bid_id
 
     @property
     def created_at(self) -> datetime.datetime:
         """:class:`datetime.datetime`: Returns the created at of the item."""
         return datetime.datetime.fromisoformat(self._created_at)
-    
+
     @property
     def price(self) -> float:
         """:class:`float`: Returns the price of the item in USD."""
         return self._price / 100
-    
+
     @property
-    def contract_id(self):
+    def contract_id(self) -> str:
         return self._contract_id
-    
+
     @property
-    def state(self):
+    def state(self) -> str:
         return self._state
-    
+
     @property
-    def obfuscated_buyer_id(self):
+    def obfuscated_buyer_id(self) -> str:
         return self._obfuscated_buyer_id
 
 
@@ -92,23 +96,23 @@ class AuctionDetails:
     def __init__(self, *, data: Dict[str, Any]) -> None:
         self._reserve_price = data.get("reserve_price", 0.0)
         self._top_bid = data.get("top_bid")
-        self._expires_at = data.get("expires_at", )
+        self._expires_at = data.get("expires_at")
         self._min_next_bid = data.get("min_next_bid", 0.0)
 
     @property
-    def reserve_price(self):
+    def reserve_price(self) -> float:
         return self._reserve_price / 100
-    
+
     @property
-    def top_bid(self):
+    def top_bid(self) -> TopBid:
         return TopBid(data=self._top_bid)
-    
+
     @property
-    def expires_at(self):
+    def expires_at(self) -> datetime.datetime:
         return datetime.datetime.fromisoformat(self._expires_at)
-    
+
     @property
-    def min_next_bid(self):
+    def min_next_bid(self) -> float:
         return self._min_next_bid / 100
 
 
@@ -198,7 +202,8 @@ class Listing:
     def watchers(self) -> int:
         """:class:`int`: Returns the number of watchers for the item."""
         return self._watchers
-    
+
     @property
     def auction_details(self) -> Optional[AuctionDetails]:
+        """:class:`AuctionDetails`: Returns the details of the auction, if the listing is an auction."""
         return AuctionDetails(data=self._auction_details) if self._auction_details else None

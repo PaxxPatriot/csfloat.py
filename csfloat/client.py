@@ -58,7 +58,7 @@ class Client:
 
         Returns
         -------
-        :class:`ListingAsyncIterator` of :class:`Item`
+        :class:`ListingAsyncIterator` of :class:`Listing`
         """
 
         return ListingAsyncIterator(self.http.get_all_listings)
@@ -76,11 +76,11 @@ class Client:
 
     async def me(self) -> AuthenticatedUser:
         """*coroutine*
-        Return a user.
+        Returns the authenticated user.
 
         Returns
         -------
-        :class:`User`
+        :class:`AuthenticatedUser`
         """
         data = await self.http.me()
         return AuthenticatedUser(data=data["user"])
