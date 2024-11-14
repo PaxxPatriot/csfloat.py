@@ -9,7 +9,7 @@ __title__ = "csfloat"
 __author__ = "PaxxPatriot"
 __license__ = "MIT"
 __copyright__ = "Copyright 2023 PaxxPatriot"
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 __path__ = __import__("pkgutil").extend_path(__path__, __name__)
 
@@ -32,6 +32,6 @@ class VersionInfo(NamedTuple):
     serial: int
 
 
-version_info: VersionInfo = VersionInfo(major=0, minor=0, micro=1, releaselevel="final", serial=0)
+version_info: VersionInfo = VersionInfo(major=0, minor=0, micro=2, releaselevel="final", serial=0)
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
