@@ -129,6 +129,8 @@ class Listing:
         "_reference",
         "_item",
         "_is_seller",
+        "_min_offer_price",
+        "_max_offer_discount",
         "_is_watchlisted",
         "_watchers",
         "_auction_details",
@@ -144,6 +146,8 @@ class Listing:
         self._reference = data.get("reference")
         self._item = data.get("item")
         self._is_seller = data.get("is_seller", False)
+        self._min_offer_price = data.get("min_offer_price", None)
+        self._max_offer_discount = data.get("max_offer_discount", None)
         self._is_watchlisted = data.get("is_watchlisted", False)
         self._watchers = data.get("watchers", 0)
         self._auction_details = data.get("auction_details")
@@ -192,6 +196,16 @@ class Listing:
     def is_seller(self) -> bool:
         """:class:`bool`: Returns whether the current user is the seller of the item."""
         return self._is_seller
+
+    @property
+    def min_offer_price(self) -> Optional[float]:
+        """:class:`float`: Returns the minimum price you have to offer."""
+        return self._min_offer_price / 100 if self._min_offer_price else None
+
+    @property
+    def max_offer_discount(self) -> Optional[float]:
+        """:class:`float`: Returns the max discount in percent."""
+        return self._max_offer_discount / 10_000 if self._max_offer_discount else None
 
     @property
     def is_watchlisted(self) -> bool:

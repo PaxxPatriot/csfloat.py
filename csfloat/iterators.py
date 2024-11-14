@@ -73,7 +73,8 @@ class ListingAsyncIterator:
 
         self.kwargs["page"] = self.pagination_token
         try:
-            listings: List[Dict[str, Any]] = await self.getter(params=self.kwargs)
+            data: Dict[str, Any] = await self.getter(params=self.kwargs)
+            listings = data["data"]
         except BadRequest:
             self.has_more = False
             return
