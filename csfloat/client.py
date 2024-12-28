@@ -1,7 +1,7 @@
 """
 MIT License
 
-Copyright (c) 2023 PaxxPatriot
+Copyright (c) 2023-present PaxxPatriot
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -51,9 +51,10 @@ class Client:
         """
         await self.http.close()
 
-    async def fetch_all_listings(self) -> ListingAsyncIterator:
+    async def fetch_all_listings(self, **kwargs) -> ListingAsyncIterator:
         """*coroutine*
-        Returns an AsyncIterator that iterates over **all** listings of csfloat.
+        Returns an AsyncIterator that iterates over **all** listings of csfloat. The result can be filtered by passing parameters as `kwargs` to the method.
+        A list of accepted parameters can be found at the `CSFloat documentation <https://docs.csfloat.com/#get-all-listings>`_.
 
 
         Returns
@@ -61,7 +62,7 @@ class Client:
         :class:`ListingAsyncIterator` of :class:`Listing`
         """
 
-        return ListingAsyncIterator(self.http.get_all_listings)
+        return ListingAsyncIterator(self.http.get_all_listings, **kwargs)
 
     async def get_listing(self, id: int) -> Listing:
         """*coroutine*

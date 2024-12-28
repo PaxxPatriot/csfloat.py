@@ -2,13 +2,13 @@
 CSFloat API Wrapper
 ~~~~~~~~~~~~~~~~~~~
 A basic wrapper for the CSFloat API.
-:copyright: (c) 2023 PaxxPatriot
+:copyright: (c) 2023-present PaxxPatriot
 :license: MIT, see LICENSE for more details.
 """
 __title__ = "csfloat"
 __author__ = "PaxxPatriot"
 __license__ = "MIT"
-__copyright__ = "Copyright 2023 PaxxPatriot"
+__copyright__ = "Copyright 2023-present PaxxPatriot"
 __version__ = "0.0.2"
 
 __path__ = __import__("pkgutil").extend_path(__path__, __name__)
