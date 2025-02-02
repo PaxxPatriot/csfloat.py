@@ -113,9 +113,10 @@ class HTTPClient:
                     raise NotFound(response, data)
                 if response.status == 429:
                     # We are getting rate-limited, read x-ratelimit-reset header and calculate cooldown
-                    default_ratelimit_time = int(time.time()) + 600
-                    ratelimit_reset = int(headers.get("X-Ratelimit-Reset", default_ratelimit_time))
-                    wait_time = ratelimit_reset - int(time.time())
+                    wait_time = 600
+                    ratelimit_reset = response.headers.get("X-Ratelimit-Reset")
+                    if ratelimit_reset is not None:
+                        wait_time = int(ratelimit_reset) - int(time.time())
                     _log.info(f"{method} {url} is getting rate-limited, retry after {wait_time} seconds")
                     await asyncio.sleep(wait_time)
                     continue
