@@ -160,6 +160,9 @@ class Listing:
         self._watchers = data.get("watchers", 0)
         self._auction_details = data.get("auction_details", None)
 
+    def __repr__(self) -> str:
+        return f"Listing({{'id': {self._listing_id}, 'created_at': {self._created_at},  'description': {self._description}, 'type': {self._type}, 'price': {self._price}, 'state': {self._state}, 'seller': {self._seller}, 'reference': {self._reference}, 'item': {self._item}, 'is_seller': {self._is_seller}, 'min_offer_price': {self._min_offer_price}, 'max_offer_discount': {self._max_offer_discount}, 'is_watchlisted': {self._is_watchlisted}, 'watchers': {self._watchers}, 'auction_details': {self._auction_details}}})"
+
     @property
     def listing_id(self) -> str:
         """:class:`str`: Returns the ID of the item."""
