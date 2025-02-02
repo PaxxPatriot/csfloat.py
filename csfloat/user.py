@@ -23,6 +23,7 @@ SOFTWARE.
 """
 
 __all__ = (
+    "FirebaseMessaging",
     "PaymentAccounts",
     "UserStatistics",
     "AuthenticatedUserStatistics",
@@ -31,7 +32,30 @@ __all__ = (
     "AuthenticatedUser",
 )
 
+import datetime
 from typing import Any, Dict, List, Optional
+
+
+class FirebaseMessaging:
+    __slots__ = (
+        "_platform",
+        "_last_updated",
+    )
+
+    def __init__(self, *, data: Dict[str, Any]) -> None:
+        self._platform = data.get("platform", None)
+        self._last_updated = data.get("last_updated", None)
+
+    def __repr__(self) -> str:
+        return f"FirebaseMessaging({{'platform': {self._platform}, 'last_updated': {self._last_updated}}})"
+
+    @property
+    def platform(self) -> Optional[str]:
+        return self._platform
+
+    @property
+    def last_update(self) -> Optional[datetime.datetime]:
+        return datetime.datetime.fromisoformat(self._last_updated) if self._last_updated is not None else None
 
 
 class PaymentAccounts:
@@ -242,6 +266,10 @@ class AuthenticatedUser(User):
         "_withdraw_fee",
         "_subscriptions",
         "_has_2fa",
+        "_extension_setup_at",
+        "_firebase_messaging",
+        "_stripe_connect",
+        "_has_api_key",
     )
 
     def __init__(self, *, data: Dict[str, Any]) -> None:
@@ -253,7 +281,7 @@ class AuthenticatedUser(User):
         self._trade_token = data.get("trade_token", "")
         self._payment_accounts = data.get("payment_accounts", None)
         self._api_key = data.get("api_key", "")
-        self._statistics = data.get("statistics")
+        self._statistics = data.get("statistics", None)
         self._preferences = data.get("preferences", None)
         self._know_your_customer = data.get("know_your_customer", "")
         self._obfuscated_id = data.get("obfuscated_id", "")
@@ -261,6 +289,10 @@ class AuthenticatedUser(User):
         self._withdraw_fee = data.get("withdraw_fee", 0.0)
         self._subscriptions = data.get("subscriptions", [])
         self._has_2fa = data.get("has_2fa", False)
+        self._extension_setup_at = data.get("extension_setup_at", "1970-01-01T00:00:00.000000Z")
+        self._firebase_messaging = data.get("firebase_messaging")
+        self._stripe_connect = data.get("stripe_connect")
+        self._has_api_key = data.get("has_api_key", False)
 
     @property
     def background_url(self) -> str:
@@ -336,3 +368,20 @@ class AuthenticatedUser(User):
     def has_2fa(self) -> bool:
         """:class:`Any`: Returns the 2FA status of the user."""
         return self._has_2fa
+
+    @property
+    def extension_setup_at(self) -> datetime.datetime:
+        """:class:`datetime.datetime`: Returns the date and time when the CSFloat extension was set up."""
+        return datetime.datetime.fromisoformat(self._extension_setup_at)
+
+    @property
+    def firebase_messaging(self) -> FirebaseMessaging:
+        return FirebaseMessaging(data=self._firebase_messaging)
+
+    @property
+    def stripe_connect(self) -> Dict[str, bool]:
+        return self._stripe_connect
+
+    @property
+    def has_api_key(self) -> bool:
+        return self._has_api_key
