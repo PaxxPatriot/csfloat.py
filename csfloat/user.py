@@ -68,6 +68,9 @@ class PaymentAccounts:
         self._stripe_connect = data.get("stripe_connect", "")
         self._stripe_customer = data.get("stripe_customer", "")
 
+    def __repr__(self) -> str:
+        return f"PaymentAccounts({{'stripe_connect': {self._stripe_connect}, 'stripe_customer': {self._stripe_customer}}})"
+
     @property
     def stripe_connect(self) -> str:
         """:class:`str`: Returns Stripe account ID."""
@@ -135,12 +138,17 @@ class AuthenticatedUserStatistics(UserStatistics):
         self._total_sales = data.get("total_sales", 0)
         self._total_purchases = data.get("total_purchases", 0)
 
+    def __repr__(self) -> str:
+        return f"AuthenticatedUserStatistics({{'median_trade_time': {self._median_trade_time}, 'total_avoided_trades': {self._total_avoided_trades}, 'total_failed_trades': {self._total_failed_trades}, 'total_trades': {self._total_trades}, 'total_verified_trades': {self._total_verified_trades}, 'total_sales': {self._total_sales}, 'total_purchases': {self._total_purchases}}})"
+
     @property
     def total_sales(self) -> float:
+        """:class:`float`: Returns the figure of total sales in USD."""
         return self._total_sales / 100
 
     @property
     def total_purchases(self) -> float:
+        """:class:`float`: Returns the figure of total purchases in USD."""
         return self._total_purchases / 100
 
 
@@ -153,6 +161,9 @@ class UserPreferences:
     def __init__(self, *, data: Dict[str, Any]) -> None:
         self._offers_enabled = data.get("offers_enabled", True)
         self._max_offer_discount = data.get("max_offer_discount", 0)
+
+    def __repr__(self) -> str:
+        return f"UserPreferences({{'offers_enabled': {self._offers_enabled}, 'max_offer_discount': {self._max_offer_discount}}})"
 
     @property
     def offers_enabled(self) -> bool:
@@ -192,6 +203,9 @@ class User:
         self._steam_id = data.get("steam_id", None)
         self._username = data.get("username", None)
         self._verification_mode = data.get("verification_mode", None)
+
+    def __repr__(self) -> str:
+        return f"User({{'avatar': {self._avatar}, 'away': {self._away}, 'flags': {self._flags}, 'obfuscated_id': {self._obfuscated_id}, 'has_valid_steam_api_key': {self._has_valid_steam_api_key}, 'online': {self._online}, 'stall_public': {self._stall_public}, 'statistics': {self._statistics}, 'steam_id': {self._steam_id}, 'username': {self._username}, 'verification_mode': {self._verification_mode}}})"
 
     @property
     def avatar(self) -> Optional[str]:
@@ -280,7 +294,7 @@ class AuthenticatedUser(User):
         self._pending_balance = data.get("pending_balance", 0)
         self._trade_token = data.get("trade_token", "")
         self._payment_accounts = data.get("payment_accounts", None)
-        self._api_key = data.get("api_key", "")
+        self._api_key = data.get("api_key")
         self._statistics = data.get("statistics", None)
         self._preferences = data.get("preferences", None)
         self._know_your_customer = data.get("know_your_customer", "")
@@ -293,6 +307,9 @@ class AuthenticatedUser(User):
         self._firebase_messaging = data.get("firebase_messaging")
         self._stripe_connect = data.get("stripe_connect")
         self._has_api_key = data.get("has_api_key", False)
+
+    def __repr__(self) -> str:
+        return f"AuthenticatedUser({{'avatar': {self._avatar}, 'away': {self._away}, 'flags': {self._flags}, 'obfuscated_id': {self._obfuscated_id}, 'has_valid_steam_api_key': {self._has_valid_steam_api_key}, 'online': {self._online}, 'stall_public': {self._stall_public}, 'statistics': {self._statistics}, 'steam_id': {self._steam_id}, 'username': {self._username}, 'verification_mode': {self._verification_mode}, 'background_url': {self._background_url}, 'email': {self._email}, 'balance': {self._balance}, 'pending_balance': {self._pending_balance}, 'trade_token': {self._trade_token}, 'payment_accounts': {self._payment_accounts}, 'api_key': {self._api_key}, 'preferences': {self._preferences}, 'know_your_customer': {self._know_your_customer}, 'fee': {self._fee}, 'withdraw_fee': {self._withdraw_fee}, 'subscriptions': {self._subscriptions}, 'has_2fa': {self._has_2fa}, 'extension_setup_at': {self._extension_setup_at}, 'firebase_messaging': {self._firebase_messaging}, 'stripe_connect': {self._stripe_connect}, 'has_api_key': {self._has_api_key}}})"
 
     @property
     def background_url(self) -> str:
@@ -325,8 +342,8 @@ class AuthenticatedUser(User):
         return PaymentAccounts(data=self._payment_accounts)
 
     @property
-    def api_key(self) -> str:
-        """:class:`Any`: Returns the API key of the user."""
+    def api_key(self) -> Optional[str]:
+        """Optional[:class:`str`]: Returns the API key of the user."""
         return self._api_key
 
     @property
