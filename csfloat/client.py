@@ -75,6 +75,36 @@ class Client:
         data = await self.http.get_listing(item_id=id)
         return Listing(data=data)
 
+    async def get_user(self, id: int) -> User:
+        """*coroutine*
+        Return a specific user.
+
+        Returns
+        -------
+        :class:`User`
+        """
+        data = await self.http.get_user(user_id=id)
+        return User(data=data)
+
+    async def get_user_stall(self, id: int, *, limit: int = 40, **kwargs) -> List[Listing]:
+        """*coroutine*
+        Return the listings in a stall of a specific user.
+
+        The parameters are the same as for getting global listings.
+        Find a list of accepted parameters at the `CSFloat documentation <https://docs.csfloat.com/#get-all-listings>`_.
+
+        Returns
+        -------
+        List[:class:`Listing`]
+        """
+
+        params = {
+            "limit": limit,
+        }
+        params = params | kwargs
+        data = await self.http.get_user_stall(user_id=id, params=params)
+        return [Listing(data=listing_data) for listing_data in data["data"]]
+        
     async def me(self) -> AuthenticatedUser:
         """*coroutine*
         Returns the authenticated user.

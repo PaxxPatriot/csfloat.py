@@ -131,6 +131,12 @@ class HTTPClient:
     async def list_item(self, parameters: Dict) -> List[Dict[str, Any]]:
         return await self.request(Route("POST", "/listings"), json=parameters)
 
+    async def get_user(self, user_id: int) -> Dict[str, Any]:
+        return await self.request(Route("GET", f"/users/{user_id}"))
+    
+    async def get_user_stall(self, user_id: int, **parameters: Any) -> List[Dict[str, Any]]:
+        return await self.request(Route("GET", f"/users/{user_id}/stall"), **parameters)
+
     # Undocumented endpoints (only usable with an API key)
     async def me(self) -> Dict[str, Any]:
         return await self.request(Route("GET", "/me"))
