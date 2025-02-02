@@ -659,6 +659,7 @@
         },
         "csfloat.py": {
             "editable": true,
+            "markers": "python_version >= '3.10'",
             "path": "."
         },
         "frozenlist": {
