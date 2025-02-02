@@ -104,7 +104,7 @@ class Client:
         params = params | kwargs
         data = await self.http.get_user_stall(user_id=id, params=params)
         return [Listing(data=listing_data) for listing_data in data["data"]]
-        
+
     async def me(self) -> AuthenticatedUser:
         """*coroutine*
         Returns the authenticated user.

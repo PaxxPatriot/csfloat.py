@@ -133,7 +133,7 @@ class HTTPClient:
 
     async def get_user(self, user_id: int) -> Dict[str, Any]:
         return await self.request(Route("GET", f"/users/{user_id}"))
-    
+
     async def get_user_stall(self, user_id: int, **parameters: Any) -> List[Dict[str, Any]]:
         return await self.request(Route("GET", f"/users/{user_id}/stall"), **parameters)
 
