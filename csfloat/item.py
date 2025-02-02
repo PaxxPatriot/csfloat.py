@@ -297,7 +297,7 @@ class Item:
     @property
     def icon_url(self) -> str:
         """:class:`str`: Returns the icon URL of the item."""
-        return self._icon_url
+        return f"https://community.cloudflare.steamstatic.com/economy/image/{self._icon_url}"
 
     @property
     def d_param(self) -> str:
@@ -410,7 +410,7 @@ class Item:
 
     @property
     def gs_sig(self) -> str:
-        return self.gs_sig
+        return self._gs_sig
 
     @property
     def high_rank(self) -> Optional[int]:
