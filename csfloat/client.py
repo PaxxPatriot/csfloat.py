@@ -104,7 +104,7 @@ class Client:
         *,
         max_offer_discount: Optional[int] = None,
         description: Optional[str] = "",
-        private: bool = False
+        private: bool = False,
     ) -> Listing:
         if isinstance(description, str) and len(description) > 32:
             raise BadArgument("description can't be longer than 32 characters")

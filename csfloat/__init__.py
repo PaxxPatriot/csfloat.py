@@ -5,6 +5,7 @@ A basic wrapper for the CSFloat API.
 :copyright: (c) 2023-present PaxxPatriot
 :license: MIT, see LICENSE for more details.
 """
+
 __title__ = "csfloat"
 __author__ = "PaxxPatriot"
 __license__ = "MIT"
