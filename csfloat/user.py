@@ -71,6 +71,9 @@ class UserStatistics:
         self._total_trades = data.get("total_trades", 0)
         self._total_verified_trades = data.get("total_verified_trades", 0)
 
+    def __repr__(self) -> str:
+        return f"UserStatistics({{'median_trade_time': {self._median_trade_time}, 'total_avoided_trades': {self._total_avoided_trades}, 'total_failed_trades': {self._total_failed_trades}, 'total_trades': {self._total_trades}, 'total_verified_trades': {self._total_verified_trades}}})"
+
     @property
     def median_trade_time(self) -> int:
         """:class:`int`: Returns the median trade time of the seller in seconds."""
@@ -143,6 +146,7 @@ class User:
         "_avatar",
         "_away",
         "_flags",
+        "_obfuscated_id",
         "_has_valid_steam_api_key",
         "_online",
         "_stall_public",
@@ -153,20 +157,21 @@ class User:
     )
 
     def __init__(self, *, data: Dict[str, Any]) -> None:
-        self._avatar = data.get("avatar")
+        self._avatar = data.get("avatar", None)
         self._away = data.get("away", False)
         self._flags = data.get("flags")
+        self._obfuscated_id = data.get("obfuscated_id", None)
         self._has_valid_steam_api_key = data.get("has_valid_steam_api_key", False)
         self._online = data.get("online", False)
         self._stall_public = data.get("stall_public", False)
         self._statistics = data.get("statistics")
-        self._steam_id = data.get("steam_id")
-        self._username = data.get("username")
-        self._verification_mode = data.get("verification_mode")
+        self._steam_id = data.get("steam_id", None)
+        self._username = data.get("username", None)
+        self._verification_mode = data.get("verification_mode", None)
 
     @property
-    def avatar(self) -> str:
-        """:class:`str`: Returns the URL to the avatar of the seller."""
+    def avatar(self) -> Optional[str]:
+        """Optional[:class:`str`]: Returns the URL to the avatar of the seller."""
         return self._avatar
 
     @property
@@ -178,6 +183,11 @@ class User:
     def flags(self) -> int:
         """:class:`int`: Returns the flags of the seller."""
         return self._flags
+
+    @property
+    def obfuscated_id(self) -> Optional[str]:
+        """Optional[:class:`str`]: Returns the obfuscated ID of the seller."""
+        return self._obfuscated_id
 
     @property
     def has_valid_steam_api_key(self) -> bool:
@@ -201,17 +211,17 @@ class User:
 
     @property
     def steam_id(self) -> Optional[str]:
-        """:class:`str`: Returns the Steam ID of the seller."""
+        """Optional[:class:`str`]: Returns the Steam ID of the seller."""
         return self._steam_id
 
     @property
     def username(self) -> Optional[str]:
-        """:class:`str`: Returns the username of the seller."""
+        """Optional[:class:`str`]: Returns the username of the seller."""
         return self._username
 
     @property
-    def verification_mode(self) -> str:
-        """:class:`str`: Returns the verification mode of the seller."""
+    def verification_mode(self) -> Optional[str]:
+        """Optional[:class:`str`]: Returns the verification mode of the seller."""
         return self._verification_mode
 
 

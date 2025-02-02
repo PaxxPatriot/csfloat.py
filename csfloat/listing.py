@@ -56,6 +56,9 @@ class TopBid:
         self._state = data.get("state", "")
         self._obfuscated_buyer_id = data.get("obfuscated_buyer_id", 0)
 
+    def __repr__(self) -> str:
+        return f"TopBid({{'id': {self._bid_id}, 'created_at': {self._created_at}, 'price': {self._price}, 'contract_id': {self._contract_id}, 'state': {self._state}, 'obfuscated_buyer_id': {self._obfuscated_buyer_id}}})"
+
     @property
     def bid_id(self) -> str:
         return self._bid_id
@@ -99,6 +102,9 @@ class AuctionDetails:
         self._expires_at = data.get("expires_at", "1970-01-01T00:00:00.000000Z")
         self._min_next_bid = data.get("min_next_bid", 0.0)
 
+    def __repr__(self) -> str:
+        return f"AuctionDetails({{'reserve_price': {self._reserve_price}, 'top_bid': {self._top_bid}, 'expires_at': {self._expires_at}, 'min_next_bid': {self._min_next_bid}}})"
+
     @property
     def reserve_price(self) -> float:
         return self._reserve_price / 100
@@ -122,6 +128,7 @@ class Listing:
     __slots__ = (
         "_listing_id",
         "_created_at",
+        "_description",
         "_type",
         "_price",
         "_state",
@@ -139,6 +146,7 @@ class Listing:
     def __init__(self, *, data: Dict[str, Any]) -> None:
         self._listing_id = data.get("id", "")
         self._created_at = data.get("created_at", "1970-01-01T00:00:00.000000Z")
+        self._description = data.get("description", None)
         self._type = data.get("type", "")
         self._price = data.get("price", 0)
         self._state = data.get("state", "")
@@ -150,7 +158,7 @@ class Listing:
         self._max_offer_discount = data.get("max_offer_discount", None)
         self._is_watchlisted = data.get("is_watchlisted", False)
         self._watchers = data.get("watchers", 0)
-        self._auction_details = data.get("auction_details")
+        self._auction_details = data.get("auction_details", None)
 
     @property
     def listing_id(self) -> str:
@@ -161,6 +169,11 @@ class Listing:
     def created_at(self) -> datetime.datetime:
         """:class:`datetime.datetime`: Returns the created at of the item."""
         return datetime.datetime.fromisoformat(self._created_at)
+
+    @property
+    def description(self) -> Optional[str]:
+        """Optional[:class:`str`]: Returns the description of the listing."""
+        return self._description
 
     @property
     def type(self) -> ListingType:

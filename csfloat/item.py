@@ -27,11 +27,40 @@ from typing import Any, Dict, List, Optional
 from .enums import Rarity
 
 __all__ = (
+    "FadeInfo",
     "StickerReference",
     "Reference",
     "Sticker",
     "Item",
 )
+
+
+class FadeInfo:
+    __slots__ = (
+        "_seed",
+        "_percentage",
+        "_rank",
+    )
+
+    def __init__(self, *, data: Dict[str, Any]) -> None:
+        self._seed = data.get("seed")
+        self._percentage = data.get("percentage")
+        self._rank = data.get("rank")
+
+    def __repr__(self) -> str:
+        return f"FadeInfo({{'seed': {self._seed}, 'percentage': {self._percentage}, 'rank': {self._rank}}})"
+
+    @property
+    def seed(self) -> int:
+        return self._seed
+
+    @property
+    def percentage(self) -> float:
+        return self._percentage
+
+    @property
+    def rank(self) -> int:
+        return self._rank
 
 
 class StickerReference:
@@ -45,6 +74,9 @@ class StickerReference:
         self._price = data.get("price", 0)
         self._quantity = data.get("quantity", 0)
         self._updated_at = data.get("updated_at", "1970-01-01T00:00:00.000000Z")
+
+    def __repr__(self) -> str:
+        return f"StickerReference({{'price': {self._price}, 'quantity': {self._quantity}, 'updated_at': {self._updated_at}}})"
 
     @property
     def price(self) -> float:
@@ -75,6 +107,9 @@ class Reference:
         self._quantity = data.get("quantity", 0)
         self._last_updated = data.get("last_updated", "1970-01-01T00:00:00.000000Z")
 
+    def __repr__(self) -> str:
+        return f"Reference({{'base_price': {self._base_price}, 'float_factor': {self._float_factor}, 'predicted_price': {self._predicted_price}, 'quantity': {self._quantity}, 'last_updated': {self._last_updated}}})"
+
     @property
     def base_price(self) -> float:
         """:class:`float`: Returns the base price of the reference."""
@@ -104,6 +139,9 @@ class Sticker:
         "_icon_url",
         "_name",
         "_reference",
+        "_offset_x",
+        "_offset_y",
+        "_rotation",
     )
 
     def __init__(self, *, data: Dict[str, Any]) -> None:
@@ -113,6 +151,12 @@ class Sticker:
         self._icon_url = data.get("icon_url", "")
         self._name = data.get("name", "")
         self._reference = data.get("reference")
+        self._offset_x = data.get("offset_x")
+        self._offset_y = data.get("offset_y")
+        self._rotation = data.get("rotation")
+
+    def __repr__(self) -> str:
+        return f"Sticker({{'stickerId': {self._sticker_id}, 'slot': {self._slot}, 'wear': {self._wear}, 'icon_url': {self._icon_url}, 'name': {self._name}, 'reference': {self._reference}, 'offset_x': {self._offset_x}, 'offset_y': {self._offset_y}, 'rotation': {self._rotation}}})"
 
     @property
     def sticker_id(self) -> int:
@@ -137,6 +181,18 @@ class Sticker:
     @property
     def reference(self) -> Optional[StickerReference]:
         return StickerReference(data=self._reference) if self._reference else None
+
+    @property
+    def offset_x(self) -> float:
+        return self._offset_x
+
+    @property
+    def offset_y(self) -> float:
+        return self._offset_y
+
+    @property
+    def rotation(self) -> int:
+        return self._rotation
 
 
 class Item:
@@ -170,6 +226,11 @@ class Item:
         "_collection",
         "_serialized_inspect",
         "_gs_sig",
+        "_high_rank",
+        "_phase",
+        "_sticker_index",
+        "_badges",
+        "_fade",
     )
 
     def __init__(self, *, data: Dict[str, Any]) -> None:
@@ -188,7 +249,7 @@ class Item:
         self._stickers = data.get("stickers", [])
         self._low_rank = data.get("low_rank", 1_000_000)
         self._tradable = data.get("tradable", False)
-        self._inspect_link = data.get("inspect_link")
+        self._inspect_link = data.get("inspect_link", None)
         self._has_screenshot = data.get("has_screenshot", False)
         self._cs2_screenshot_id = data.get("cs2_screenshot_id", "")
         self._cs2_screenshot_at = data.get("cs2_screenshot_at", "1970-01-01T00:00:00.000000Z")
@@ -202,6 +263,11 @@ class Item:
         self._collection = data.get("collection", "")
         self._serialized_inspect = data.get("serialized_inspect", "")
         self._gs_sig = data.get("gs_sig", "")
+        self._high_rank = data.get("high_rank", None)
+        self._phase = data.get("phase", None)
+        self._sticker_index = data.get("sticker_index", None)
+        self._badges = data.get("badges", [])
+        self._fade = data.get("fade", None)
 
     @property
     def asset_id(self) -> str:
@@ -279,8 +345,8 @@ class Item:
         return self._tradable
 
     @property
-    def inspect_link(self) -> str:
-        """:class:`str`: Returns the inspect link of the item."""
+    def inspect_link(self) -> Optional[str]:
+        """Optional[:class:`str`]: Returns the inspect link of the item."""
         return self._inspect_link
 
     @property
@@ -345,3 +411,27 @@ class Item:
     @property
     def gs_sig(self) -> str:
         return self.gs_sig
+
+    @property
+    def high_rank(self) -> Optional[int]:
+        """Optional[:class:`int`]: Returns the rank in the CSFloat float database."""
+        return self._high_rank
+
+    @property
+    def phase(self) -> Optional[str]:
+        """Optional[:class:`str`]: Returns the Doppler or Gamma Doppler phase of the item."""
+        return self._phase
+
+    @property
+    def sticker_index(self) -> Optional[str]:
+        """Optional[:class:`str`]: Returns the index if the item is a sticker."""
+        return self._sticker_index
+
+    @property
+    def badges(self) -> List[str]:
+        """List[:class:`str`]: Returns a list of badges."""
+        return self._badges
+
+    @property
+    def fade(self) -> Optional[FadeInfo]:
+        return FadeInfo(data=self._fade) if self._fade is not None else None
