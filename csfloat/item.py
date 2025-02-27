@@ -28,8 +28,9 @@ from .enums import Rarity
 
 __all__ = (
     "FadeInfo",
-    "StickerReference",
+    "AttachmentReference",
     "Reference",
+    "Keychain",
     "Sticker",
     "Item",
 )
@@ -63,7 +64,7 @@ class FadeInfo:
         return self._rank
 
 
-class StickerReference:
+class AttachmentReference:
     __slots__ = (
         "_price",
         "_quantity",
@@ -76,7 +77,7 @@ class StickerReference:
         self._updated_at = data.get("updated_at", "1970-01-01T00:00:00.000000Z")
 
     def __repr__(self) -> str:
-        return f"StickerReference({{'price': {self._price}, 'quantity': {self._quantity}, 'updated_at': {self._updated_at}}})"
+        return f"AttachmentReference(data={{'price': {self._price}, 'quantity': {self._quantity}, 'updated_at': {self._updated_at}}})"
 
     @property
     def price(self) -> float:
@@ -131,6 +132,70 @@ class Reference:
         return datetime.datetime.fromisoformat(self._last_updated)
 
 
+class Keychain:
+    __slots__ = (
+        "_sticker_id",
+        "_slot",
+        "_offset_x",
+        "_offset_y",
+        "_offset_z",
+        "_pattern",
+        "_icon_url",
+        "_name",
+        "_reference",
+    )
+
+    def __init__(self, *, data: Dict[str, Any]) -> None:
+        self._sticker_id = data.get("stickerId", 0)
+        self._slot = data.get("slot", 0)
+        self._offset_x = data.get("offset_x")
+        self._offset_y = data.get("offset_y")
+        self._offset_z = data.get("offset_z")
+        self._pattern = data.get("pattern")
+        self._icon_url = data.get("icon_url", "")
+        self._name = data.get("name", "")
+        self._reference = data.get("reference")
+
+    def __repr__(self) -> str:
+        return f"Keychain(data={{'stickerId': {self._sticker_id}, 'slot': {self._slot}, 'offset_x': {self._offset_x}, 'offset_y': {self._offset_y}, 'offset_z': {self._offset_z}, 'pattern': {self._pattern}, 'icon_url': {self._icon_url}, 'name': {self._name}, 'reference': {self._reference}}})"
+
+    @property
+    def sticker_id(self) -> int:
+        return self._sticker_id
+
+    @property
+    def slot(self) -> int:
+        return self._slot
+
+    @property
+    def offset_x(self) -> float:
+        return self._offset_x
+
+    @property
+    def offset_y(self) -> float:
+        return self._offset_y
+
+    @property
+    def offset_z(self) -> float:
+        return self._offset_z
+
+    @property
+    def pattern(self) -> float:
+        return self._pattern
+
+    @property
+    def icon_url(self) -> str:
+        return self._icon_url
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def reference(self) -> Optional[AttachmentReference]:
+        return AttachmentReference(data=self._reference) if self._reference else None
+
+
 class Sticker:
     __slots__ = (
         "_sticker_id",
@@ -179,8 +244,8 @@ class Sticker:
         return self._name
 
     @property
-    def reference(self) -> Optional[StickerReference]:
-        return StickerReference(data=self._reference) if self._reference else None
+    def reference(self) -> Optional[AttachmentReference]:
+        return AttachmentReference(data=self._reference) if self._reference else None
 
     @property
     def offset_x(self) -> float:
@@ -210,6 +275,7 @@ class Item:
         "_quality",
         "_market_hash_name",
         "_stickers",
+        "_keychains",
         "_low_rank",
         "_tradable",
         "_inspect_link",
@@ -247,6 +313,7 @@ class Item:
         self._quality = data.get("quality", 0)
         self._market_hash_name = data.get("market_hash_name")
         self._stickers = data.get("stickers", [])
+        self._keychains = data.get("keychains", [])
         self._low_rank = data.get("low_rank", 1_000_000)
         self._tradable = data.get("tradable", False)
         self._inspect_link = data.get("inspect_link", None)
@@ -331,8 +398,13 @@ class Item:
 
     @property
     def stickers(self) -> List[Sticker]:
-        """:class:`List` of :class:`Sticker`: Returns the stickers of the item."""
+        """:class:`List` of :class:`Sticker`: Returns the attached stickers of the item."""
         return [Sticker(data=sticker) for sticker in self._stickers]
+
+    @property
+    def keychains(self) -> List[Keychain]:
+        """:class:`List` of :class:`Keychain`: Returns the attached keychains of the item."""
+        return [Keychain(data=keychain) for keychain in self._keychains]
 
     @property
     def low_rank(self) -> int:
