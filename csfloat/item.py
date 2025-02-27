@@ -49,7 +49,7 @@ class FadeInfo:
         self._rank = data.get("rank")
 
     def __repr__(self) -> str:
-        return f"FadeInfo({{'seed': {self._seed}, 'percentage': {self._percentage}, 'rank': {self._rank}}})"
+        return f"FadeInfo(data={{'seed': {self._seed}, 'percentage': {self._percentage}, 'rank': {self._rank}}})"
 
     @property
     def seed(self) -> int:
@@ -109,7 +109,7 @@ class Reference:
         self._last_updated = data.get("last_updated", "1970-01-01T00:00:00.000000Z")
 
     def __repr__(self) -> str:
-        return f"Reference({{'base_price': {self._base_price}, 'float_factor': {self._float_factor}, 'predicted_price': {self._predicted_price}, 'quantity': {self._quantity}, 'last_updated': {self._last_updated}}})"
+        return f"Reference(data={{'base_price': {self._base_price}, 'float_factor': {self._float_factor}, 'predicted_price': {self._predicted_price}, 'quantity': {self._quantity}, 'last_updated': {self._last_updated}}})"
 
     @property
     def base_price(self) -> float:
@@ -221,7 +221,7 @@ class Sticker:
         self._rotation = data.get("rotation")
 
     def __repr__(self) -> str:
-        return f"Sticker({{'stickerId': {self._sticker_id}, 'slot': {self._slot}, 'wear': {self._wear}, 'icon_url': {self._icon_url}, 'name': {self._name}, 'reference': {self._reference}, 'offset_x': {self._offset_x}, 'offset_y': {self._offset_y}, 'rotation': {self._rotation}}})"
+        return f"Sticker(data={{'stickerId': {self._sticker_id}, 'slot': {self._slot}, 'wear': {self._wear}, 'icon_url': {self._icon_url}, 'name': {self._name}, 'reference': {self._reference}, 'offset_x': {self._offset_x}, 'offset_y': {self._offset_y}, 'rotation': {self._rotation}}})"
 
     @property
     def sticker_id(self) -> int:
