@@ -57,7 +57,7 @@ class TopBid:
         self._obfuscated_buyer_id = data.get("obfuscated_buyer_id", 0)
 
     def __repr__(self) -> str:
-        return f"TopBid({{'id': {self._bid_id}, 'created_at': {self._created_at}, 'price': {self._price}, 'contract_id': {self._contract_id}, 'state': {self._state}, 'obfuscated_buyer_id': {self._obfuscated_buyer_id}}})"
+        return f"TopBid(data={{'id': {self._bid_id!r}, 'created_at': {self._created_at!r}, 'price': {self._price!r}, 'contract_id': {self._contract_id!r}, 'state': {self._state!r}, 'obfuscated_buyer_id': {self._obfuscated_buyer_id!r}}})"
 
     @property
     def bid_id(self) -> str:
@@ -103,7 +103,7 @@ class AuctionDetails:
         self._min_next_bid = data.get("min_next_bid", 0.0)
 
     def __repr__(self) -> str:
-        return f"AuctionDetails({{'reserve_price': {self._reserve_price}, 'top_bid': {self._top_bid}, 'expires_at': {self._expires_at}, 'min_next_bid': {self._min_next_bid}}})"
+        return f"AuctionDetails(data={{'reserve_price': {self._reserve_price!r}, 'top_bid': {self._top_bid!r}, 'expires_at': {self._expires_at!r}, 'min_next_bid': {self._min_next_bid!r}}})"
 
     @property
     def reserve_price(self) -> float:
@@ -161,7 +161,7 @@ class Listing:
         self._auction_details = data.get("auction_details", None)
 
     def __repr__(self) -> str:
-        return f"Listing({{'id': {self._listing_id}, 'created_at': {self._created_at},  'description': {self._description}, 'type': {self._type}, 'price': {self._price}, 'state': {self._state}, 'seller': {self._seller}, 'reference': {self._reference}, 'item': {self._item}, 'is_seller': {self._is_seller}, 'min_offer_price': {self._min_offer_price}, 'max_offer_discount': {self._max_offer_discount}, 'is_watchlisted': {self._is_watchlisted}, 'watchers': {self._watchers}, 'auction_details': {self._auction_details}}})"
+        return f"Listing(data={{'id': {self._listing_id!r}, 'created_at': {self._created_at!r},  'description': {self._description!r}, 'type': {self._type!r}, 'price': {self._price!r}, 'state': {self._state!r}, 'seller': {self._seller!r}, 'reference': {self._reference!r}, 'item': {self._item!r}, 'is_seller': {self._is_seller!r}, 'min_offer_price': {self._min_offer_price!r}, 'max_offer_discount': {self._max_offer_discount!r}, 'is_watchlisted': {self._is_watchlisted!r}, 'watchers': {self._watchers!r}, 'auction_details': {self._auction_details!r}}})"
 
     @property
     def listing_id(self) -> str:
